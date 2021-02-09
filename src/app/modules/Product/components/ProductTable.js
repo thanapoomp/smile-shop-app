@@ -5,19 +5,18 @@ import MUIDataTable from "mui-datatables";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import Icon from '@material-ui/core/Icon'
 import DeleteButton from "../../Common/components/Buttons/DeleteButton";
 import EditButton from "../../Common/components/Buttons/EditButton";
 import * as swal from "../../Common/components/SweetAlert";
-import ProductGroupTableSearch from './ProductGroupTableSearch'
-import * as productGroupAxios from '../_redux/productGroupAxios'
+import ProductTableSearch from './ProductTableSearch'
+import * as productAxios from '../_redux/productAxios'
 
 var flatten = require("flat");
 require("dayjs/locale/th");
 var dayjs = require("dayjs");
 dayjs.locale("th");
 
-function ProductGroupTable(props) {
+function ProductTable(props) {
     const [paginated, setPaginated] = React.useState({
         page: 1,
         recordsPerPage: 10,
@@ -25,6 +24,8 @@ function ProductGroupTable(props) {
         ascendingOrder: true,
         searchValues: {
           name: "",
+          productGroupId: null,
+          isShowInActive: false
         }
       });
 
@@ -41,13 +42,15 @@ function ProductGroupTable(props) {
 
       const loadData = () => {
         setIsLoading(true);
-        productGroupAxios
-          .getProductGroupFilter(
+        productAxios
+          .getProductFilter(
             paginated.orderingField,
             paginated.ascendingOrder,
             paginated.page,
             paginated.recordsPerPage,
-            paginated.searchValues.name
+            paginated.searchValues.name,
+            paginated.searchValues.isShowInActive,
+            paginated.searchValues.productGroupId
           )
           .then((res) => {
             if (res.data.isSuccess) {
@@ -77,8 +80,8 @@ function ProductGroupTable(props) {
           .then((res) => {
             if (res.isConfirmed) {
               //delete
-              productGroupAxios
-                .deleteProductGroup(id)
+              productAxios
+                .deleteProduct(id)
                 .then((res) => {
                   if (res.data.isSuccess) {
                     //reload
@@ -98,7 +101,7 @@ function ProductGroupTable(props) {
       };
     
       const handleEdit = (id) => {
-        props.history.push(`/productGroups/edit/${id}`)
+        props.history.push(`/products/edit/${id}`)
       }
     
       const handleSearch = (values) => {
@@ -111,77 +114,95 @@ function ProductGroupTable(props) {
     
       const columns = [
         {
-            name: "id",
-            label: "Id",
-          },
-          {
-            name: 'iconName',
-            label: ' ',
-            options: {
-              customBodyRenderLite:(dataIndex) => {
-                return (
-                  <Icon>{data[dataIndex].iconName}</Icon>
-                )
-              }
-            }
-          },
+          name: "id",
+          label: "Id",
+        },
         {
           name: "name",
           label: "Name",
         },
         {
-            name: "createdBy",
-            label: "Create by",
+          name: "productGroup.name",
+          label: "Group",
+        },
+        {
+          name: "price",
+          label: "Price",
+          options: {
+            customBodyRenderLite: (dataIndex) => {
+              return (
+                <Grid
+                  style={{ padding: 0, margin: 0 }}
+                  container
+                  direction="row"
+                  justify="flex-start"
+                  alignItems="center"
+                >
+                  {data[dataIndex].price}
+                </Grid>
+              );
+            }
+          }
+        },
+        {
+          name: "stock",
+          label: "Stock",
+        },
+        {
+          name: "createdBy",
+          label: "Create by",
+        },
+        {
+          name: "createdDate",
+          label: "Create Date",
+          options: {
+            customBodyRenderLite: (dataIndex) => {
+              return (
+                <Grid
+                  style={{ padding: 0, margin: 0 }}
+                  container
+                  direction="row"
+                  justify="flex-start"
+                  alignItems="center"
+                >
+                  {dayjs(data[dataIndex].createdDate).format(
+                    "DD/MM/YYYY hh:mm:ss"
+                  )}
+                </Grid>
+              );
+            },
           },
-          {
-            name: "createdDate",
-            label: "Create Date",
-            options: {
-                customBodyRenderLite: (dataIndex, rowIndex) => {
-                  return (
-                    <Grid
-                      style={{ padding: 0, margin: 0 }}
-                      container
-                      direction="row"
-                      justify="flex-start"
-                      alignItems="center"
-                    >
-                      {dayjs(data[dataIndex].createdDate).format("DD/MM/YYYY hh:mm:ss")}
-                    </Grid>
-                  );
-                },
-              },
+        },
+        {
+          name: "isActive",
+          label: "Status",
+          options: {
+            customBodyRenderLite: (dataIndex) => {
+              return (
+                <Grid
+                  style={{ padding: 0, margin: 0 }}
+                  container
+                  direction="row"
+                  justify="flex-start"
+                  alignItems="center"
+                >
+                  {data[dataIndex].isActive ? (
+                    <Typography color="primary">Active</Typography>
+                  ) : (
+                    <Typography color="error">InActive</Typography>
+                  )}
+                </Grid>
+              );
+            },
           },
-          {
-            name: "isActive",
-            label: "Status",
-            options: {
-                customBodyRenderLite: (dataIndex, rowIndex) => {
-                  return (
-                    <Grid
-                      style={{ padding: 0, margin: 0 }}
-                      container
-                      direction="row"
-                      justify="flex-start"
-                      alignItems="center"
-                    >
-                        {(data[dataIndex].isActive)? (
-                            <Typography color="primary">Active</Typography>
-                        ):(
-                            <Typography color="error">InActive</Typography>
-                        )}
-                    </Grid>
-                  );
-                },
-              },
-          },
+        },
         {
           name: "",
           options: {
             filter: false,
             sort: false,
             empty: true,
-            customBodyRenderLite: (dataIndex, rowIndex) => {
+            customBodyRenderLite: (dataIndex) => {
               return (
                 <>
                   {data[dataIndex].isActive && (
@@ -203,7 +224,10 @@ function ProductGroupTable(props) {
 
                       <DeleteButton
                         onClick={() => {
-                          handleDelete(data[dataIndex].id,data[dataIndex].name);
+                          handleDelete(
+                            data[dataIndex].id,
+                            data[dataIndex].name
+                          );
                         }}
                       >
                         Delete
@@ -256,14 +280,14 @@ function ProductGroupTable(props) {
       return (
         <div>
           {/* search */}
-          <ProductGroupTableSearch
+          <ProductTableSearch
             submit={handleSearch.bind(this)}
             history={props.history}
-          ></ProductGroupTableSearch>
+          ></ProductTableSearch>
           <MUIDataTable
             title={
               <Typography variant="h6">
-                ProductGroups
+                Products
                 {isLoading && (
                   <CircularProgress
                     size={24}
@@ -280,4 +304,4 @@ function ProductGroupTable(props) {
         </div>
       );
     }
-export default ProductGroupTable
+export default ProductTable

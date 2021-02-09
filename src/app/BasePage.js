@@ -3,12 +3,21 @@ import { Redirect, Switch, Route } from "react-router-dom";
 import { LayoutSplashScreen, ContentRoute } from "../_metronic/layout";
 import PrivateRoute from "./modules/Auth/components/PrivateRoute";
 import ErrorUnAuthorized from "./modules/Auth/pages/ErrorUnAuthorized";
-import DashboardPage from "./pages/DashboardPage";
+import Test from './pages/Test'
 import TokenHandler from "./modules/Auth/components/TokenHandler";
 import { ROLES } from "../Constants";
-
+import Alert from './modules/_Demo/Alert'
+import WithCheckboxAndRadio from './modules/_FormikDemo/pages/WithCheckboxAndRadio'
+import ReduxDemo from './modules/_Demo/pages/ReduxDemo'
+import WithTextField from './modules/_FormikDemo/pages/WithTextField'
+import WithDropdown from './modules/_FormikDemo/pages/WithDropdown'
+import WithDatePicker from './modules/_FormikDemo/pages/WithDatePicker'
+import EmployeeList from './modules/_EmployeeDemo/pages/EmployeeList'
+import NewEmployee from './modules/_EmployeeDemo/pages/NewEmployee'
 import ProductGroupList from "./modules/ProductGroup/pages/ProductGroupList";
 import ProductGroupAddEdit from './modules/ProductGroup/pages/ProductGroupAddEdit'
+import ProductList from "./modules/Product/pages/ProductList";
+import ProductAddEdit from "./modules/Product/pages/ProductAddEdit";
 
 export default function BasePage(props) {
   // useEffect(() => {
@@ -19,11 +28,11 @@ export default function BasePage(props) {
   return (
     <Suspense fallback={<LayoutSplashScreen />}>
       <Switch>
-        {<Redirect exact from="/" to="/dashboard" />}
-        <ContentRoute exact path="/dashboard" component={DashboardPage} />
+        {<Redirect exact from="/" to="/test" />}
+        <ContentRoute exact path="/test" component={Test} />
 
         {/* Start Demo part สามารถ comment ได้ */}
-        {/* <ContentRoute exact path="/alert" component={Alert} />
+        <ContentRoute exact path="/alert" component={Alert} />
         <ContentRoute exact path="/reduxDemo" component={ReduxDemo} />
         <ContentRoute exact path="/withTextField" component={WithTextField} />
         <ContentRoute exact path="/withCheckboxAndRadio" component={WithCheckboxAndRadio} />
@@ -32,12 +41,16 @@ export default function BasePage(props) {
         <ContentRoute exact path="/employee/" component={EmployeeList} />
         <ContentRoute exact path="/employee/new" component={NewEmployee} />
         <ContentRoute exact path="/employee/edit/:id" component={NewEmployee} />
-        <PrivateRoute exact path="/test" roles={[ROLES.admin,ROLES.developer]} component={Test} /> */}
+        <PrivateRoute exact path="/test" roles={[ROLES.admin,ROLES.developer]} component={Test} />
         {/* End Demo part สามารถ comment ได้ */}
 
         <ContentRoute exact path="/productGroups" component={ProductGroupList} />
         <ContentRoute exact path="/productGroups/new" component={ProductGroupAddEdit} />
         <ContentRoute exact path="/productGroups/edit/:id" component={ProductGroupAddEdit} />
+
+        <ContentRoute exact path="/products" component={ProductList} />
+        <ContentRoute exact path="/products/new" component={ProductAddEdit} />
+        <ContentRoute exact path="/products/edit/:id" component={ProductAddEdit} />
 
 
         <Route

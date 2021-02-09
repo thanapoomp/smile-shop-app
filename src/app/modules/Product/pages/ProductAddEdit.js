@@ -12,33 +12,41 @@ import {
 import { TextField } from "formik-material-ui";
 import Icon from "@material-ui/core/Icon";
 import { useParams } from "react-router-dom";
-import * as productGroupAxios from "../_redux/productGroupAxios";
 import { swalError, swalSuccess } from "../../Common/components/SweetAlert";
-import IconPicker from "../../Common/components/CustomInput/IconPicker/IconPicker";
 
-function ProductGroupAddEdit(props) {
-  const URL_AFTERSUBMIT = "/productGroups"
-  
+import * as productAxios from "../_redux/productAxios";
+import ProductGroupDropdown from "../../ProductGroup/components/ProductGroupDropdown";
+
+function ProductAddEdit(props) {
+  const URL_AFTERSUBMIT = '/products'
+
   let { id } = useParams();
 
   const [state, setState] = React.useState({
     id: 0,
     name: "",
-    iconName: ""
+    price: 0,
+    stock: 0,
+    imageUrl: "",
+    productGroupId: 0,
   });
 
   React.useEffect(() => {
     //Load by Id
     if (id) {
-      productGroupAxios
-        .getProductGroup(id)
+      productAxios
+        .getProduct(id)
         .then((res) => {
           if (res.data.isSuccess) {
+            console.log(JSON.stringify(res.data.data))
             setState({
               ...state,
               name: res.data.data.name,
               id: res.data.data.id,
-              iconName: res.data.data.iconName
+              price: res.data.data.price,
+              stock: res.data.data.stock,
+              imageUrl: res.data.data.imageUrl,
+              productGroupId: res.data.data.productGroup.id,
             });
           } else {
             swalError("Error", res.data.message).then(() => {
@@ -60,7 +68,10 @@ function ProductGroupAddEdit(props) {
       enableReinitialize
       initialValues={{
         name: state.name,
-        iconName: state.iconName
+        price: state.price,
+        stock: state.stock,
+        imageUrl: state.imageUrl,
+        productGroupId: state.productGroupId,
       }}
       //Validation section
       validate={(values) => {
@@ -70,16 +81,35 @@ function ProductGroupAddEdit(props) {
           errors.name = "Required";
         }
 
+        if (!values.price) {
+          errors.price = 'Required';
+        }
+
+        if (!values.stock) {
+          errors.price = 'required'
+        }
+
+        if (!values.productGroupId) {
+          errors.productGroupId_isError = true;
+          errors.productGroupId_errorText = "Required";
+        }
+
         return errors;
       }}
       //Form Submission
       // ต้องผ่าน Validate ก่อน ถึงจะถูกเรียก
       onSubmit={(values, { setSubmitting }) => {
-        let objPayload = { ...state, name: values.name, iconName: values.iconName };
+        let objPayload = {
+          ...state,
+          name: values.name,
+          price: values.price,
+          stock: values.stock,
+          productGroupId: values.productGroupId,
+        };
         if (state.id) {
           //Edit
-          productGroupAxios
-            .updateProductGroup(objPayload, state.id)
+          productAxios
+            .updateProduct(objPayload, state.id)
             .then((res) => {
               if (res.data.isSuccess) {
                 swalSuccess(
@@ -94,13 +124,13 @@ function ProductGroupAddEdit(props) {
               }
             })
             .catch((err) => {
-                setSubmitting(false);
+              setSubmitting(false);
               swalError("Error", err.message);
             });
         } else {
           //Add
-          productGroupAxios
-            .createProductGroup(objPayload)
+          productAxios
+            .createProduct(objPayload)
             .then((res) => {
               if (res.data.isSuccess) {
                 swalSuccess(" Success", `${objPayload.name} Created.`).then(
@@ -114,27 +144,36 @@ function ProductGroupAddEdit(props) {
               }
             })
             .catch((err) => {
-                setSubmitting(false);
+              setSubmitting(false);
               swalError("Error", err.message);
             });
         }
       }}
     >
       {/* Render form */}
-      {({ submitForm, isSubmitting, values, errors }) => (
+      {({ submitForm, isSubmitting, values, errors, touched }) => (
         <div>
           <Paper style={{ padding: 20 }} elevation={3}>
             <Form>
               <Grid style={{ marginBottom: 10 }} container>
                 {id ? (
                   <Typography variant="h6">
-                    Edit Product Group ({state.name})
+                    Edit Product ({state.name})
                   </Typography>
                 ) : (
-                  <Typography variant="h6">New Product Group</Typography>
+                  <Typography variant="h6">New Product</Typography>
                 )}
               </Grid>
               <Grid container spacing={3}>
+                <Grid item xs={12} lg={6}>
+                  <ProductGroupDropdown
+                    touched={touched}
+                    values={values}
+                    errors={errors}
+                    name="productGroupId"
+                    label="Product Group"
+                  />
+                </Grid>
                 <Grid item xs={12} lg={6}>
                   <Field
                     fullWidth
@@ -146,7 +185,24 @@ function ProductGroupAddEdit(props) {
                   />
                 </Grid>
                 <Grid item xs={12} lg={6}>
-                  <IconPicker label="icon" name="iconName"/>
+                  <Field
+                    fullWidth
+                    component={TextField}
+                    required
+                    type="number"
+                    label="Price"
+                    name="price"
+                  />
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <Field
+                    fullWidth
+                    component={TextField}
+                    required
+                    type="number"
+                    label="Stock"
+                    name="stock"
+                  />
                 </Grid>
                 <Grid
                   container
@@ -183,10 +239,10 @@ function ProductGroupAddEdit(props) {
                   </Grid>
                 </Grid>
               </Grid>
-              {/* <br></br>
+              <br></br>
               values :{JSON.stringify(values)}
               <br></br>
-              errors :{JSON.stringify(errors)} */}
+              errors :{JSON.stringify(errors)}
             </Form>
           </Paper>
         </div>
@@ -195,4 +251,4 @@ function ProductGroupAddEdit(props) {
   );
 }
 
-export default ProductGroupAddEdit;
+export default ProductAddEdit;

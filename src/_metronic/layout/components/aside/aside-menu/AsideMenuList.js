@@ -43,19 +43,33 @@ export function AsideMenuList({ layoutProps }) {
         </li>
         {/* end:: section */}
 
-        {/*begin::1 Level*/}
+        {/*begin::1 product groups*/}
         <li
           className={`menu-item ${getMenuItemActive("/productGroups", false)}`}
           aria-haspopup="true"
         >
           <NavLink className="menu-link" to="/productGroups">
             <span className="svg-icon menu-icon">
-            <Icon>group_work</Icon>
+              <Icon>group_work</Icon>
             </span>
             <span className="menu-text">Product Groups</span>
           </NavLink>
         </li>
+        {/*begin::1 end product groups*/}
 
+        {/*begin::1 products*/}
+        <li
+          className={`menu-item ${getMenuItemActive("/products", false)}`}
+          aria-haspopup="true"
+        >
+          <NavLink className="menu-link" to="/products">
+            <span className="svg-icon menu-icon">
+              <Icon>cakes</Icon>
+            </span>
+            <span className="menu-text">Products</span>
+          </NavLink>
+        </li>
+        {/*begin::1 end products*/}
       </ul>
       {/* end::Menu Nav */}
     </Hoc>

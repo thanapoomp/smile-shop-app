@@ -160,13 +160,11 @@ function EmployeeTable(props) {
       .then((res) => {
         if (res.data.isSuccess) {
           //flatten data
-          if (res.data.totalAmountRecords > 0) {
             let flatData = [];
             res.data.data.forEach((element) => {
               flatData.push(flatten(element));
             });
             setData(flatData);
-          }
           setTotalRecords(res.data.totalAmountRecords);
         } else {
           alert(res.data.message);

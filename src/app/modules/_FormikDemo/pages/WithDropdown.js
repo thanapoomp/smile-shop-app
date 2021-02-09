@@ -5,12 +5,11 @@ import { Button, LinearProgress, Grid } from "@material-ui/core";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
-
 import { Select } from "formik-material-ui";
 
 import DropdownTitle from "../components/DropdownTitle";
-
 import Casecade from "../components/CaseCade";
+import IconPicker from '../../Common/components/CustomInput/IconPicker/IconPicker'
 
 function WithDropdown() {
   return (
@@ -110,6 +109,16 @@ function WithDropdown() {
                 setFieldValue={setFieldValue}
               ></Casecade>
             </Grid>
+
+            <Grid item xs={12} lg={6}>
+              <IconPicker
+                name="iconPicker1"
+                errors={errors}
+                values={values}
+                touched={touched}
+              ></IconPicker>
+            </Grid>
+
 
             <Grid
               container
