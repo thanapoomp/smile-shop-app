@@ -3,28 +3,29 @@
 import React from "react";
 import { useLocation } from "react-router";
 import { NavLink } from "react-router-dom";
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl, checkIsActive } from "../../../../_helpers";
-import { useSelector } from "react-redux";
-import { ROLES } from "../../../../../Constants";
+// import SVG from "react-inlinesvg";
+import { checkIsActive } from "../../../../_helpers";
+// import { toAbsoluteUrl } from "../../../../_helpers";
+// import { useSelector } from "react-redux";
+// import { ROLES } from "../../../../../Constants";
 import Hoc from "../../../../../app/modules/Common/components/Hoc";
-import DvrIcon from "@material-ui/icons/Dvr";
+// import DvrIcon from "@material-ui/icons/Dvr";
 import Icon from "@material-ui/core/Icon";
 
 export function AsideMenuList({ layoutProps }) {
   const location = useLocation();
-  const authReducer = useSelector(({ auth }) => auth);
+  // const authReducer = useSelector(({ auth }) => auth);
 
-  const isShowMenu = (roles) => {
-    roles = roles === undefined ? [] : roles;
-    if (roles.length > 0) {
-      // check if route is restricted by role
-      let intersection = roles.filter((x) => authReducer.roles.includes(x));
-      return intersection.length > 0;
-    } else {
-      return true;
-    }
-  };
+  // const isShowMenu = (roles) => {
+  //   roles = roles === undefined ? [] : roles;
+  //   if (roles.length > 0) {
+  //     // check if route is restricted by role
+  //     let intersection = roles.filter((x) => authReducer.roles.includes(x));
+  //     return intersection.length > 0;
+  //   } else {
+  //     return true;
+  //   }
+  // };
 
   const getMenuItemActive = (url, hasSubmenu = false) => {
     return checkIsActive(location, url)
@@ -70,6 +71,20 @@ export function AsideMenuList({ layoutProps }) {
           </NavLink>
         </li>
         {/*begin::1 end products*/}
+
+        {/*begin::1 EditStock*/}
+        <li
+          className={`menu-item ${getMenuItemActive("/stock/", false)}`}
+          aria-haspopup="true"
+        >
+          <NavLink className="menu-link" to="/stock/">
+            <span className="svg-icon menu-icon">
+              <Icon>inventory_2</Icon>
+            </span>
+            <span className="menu-text">Edit Stock</span>
+          </NavLink>
+        </li>
+        {/*begin::1 end EditStock*/}
       </ul>
       {/* end::Menu Nav */}
     </Hoc>

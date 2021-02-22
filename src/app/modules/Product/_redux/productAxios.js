@@ -9,6 +9,10 @@ export const getProduct = (id) => {
     return axios.get(`${PRODUCT_URL}/${id}`)
 };
 
+export const getProductByProductGroupId = (productGroupId) => {
+    return axios.get(`${PRODUCT_URL}/ByProductGroupId/${productGroupId}`)
+}
+
 export const createProduct = (payload) => {
     return axios.post(PRODUCT_URL,payload)
 }

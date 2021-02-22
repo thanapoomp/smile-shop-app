@@ -21,6 +21,10 @@ export const deleteProductGroup = (id) => {
     return axios.delete(`${PRODUCTGROUP_URL}/${id}`)
 }
 
+export const getActiveProductGroups = () => {
+  return axios.get(`${PRODUCTGROUP_URL}/Active`)
+}
+
 export const getProductGroupFilter = (
   orderingField,
   ascendingOrder,

@@ -18,6 +18,9 @@ import ProductGroupList from "./modules/ProductGroup/pages/ProductGroupList";
 import ProductGroupAddEdit from './modules/ProductGroup/pages/ProductGroupAddEdit'
 import ProductList from "./modules/Product/pages/ProductList";
 import ProductAddEdit from "./modules/Product/pages/ProductAddEdit";
+import EditStockList from "./modules/Stock/pages/EditStockList";
+import EditStockAddV2 from './modules/Stock/pages/EditStockAddV2'
+import FormikContext from "./modules/_FormikDemo/pages/FormikContext";
 
 export default function BasePage(props) {
   // useEffect(() => {
@@ -35,6 +38,7 @@ export default function BasePage(props) {
         <ContentRoute exact path="/alert" component={Alert} />
         <ContentRoute exact path="/reduxDemo" component={ReduxDemo} />
         <ContentRoute exact path="/withTextField" component={WithTextField} />
+        <ContentRoute exact path="/formikContext" component={FormikContext} />
         <ContentRoute exact path="/withCheckboxAndRadio" component={WithCheckboxAndRadio} />
         <ContentRoute exact path="/withDropdown" component={WithDropdown} />
         <ContentRoute exact path="/withDatePicker" component={WithDatePicker} />
@@ -52,6 +56,8 @@ export default function BasePage(props) {
         <ContentRoute exact path="/products/new" component={ProductAddEdit} />
         <ContentRoute exact path="/products/edit/:id" component={ProductAddEdit} />
 
+        <ContentRoute exact path="/stock/" component={EditStockList} />
+        <ContentRoute exact path="/stock/add" component={EditStockAddV2} />
 
         <Route
           path="/errorUnAuthorized"
