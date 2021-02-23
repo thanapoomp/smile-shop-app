@@ -12,8 +12,8 @@ import ReduxDemo from './modules/_Demo/pages/ReduxDemo'
 import WithTextField from './modules/_FormikDemo/pages/WithTextField'
 import WithDropdown from './modules/_FormikDemo/pages/WithDropdown'
 import WithDatePicker from './modules/_FormikDemo/pages/WithDatePicker'
-import EmployeeList from './modules/_EmployeeDemo/pages/EmployeeList'
-import NewEmployee from './modules/_EmployeeDemo/pages/NewEmployee'
+import EmployeeList from './modules/Employee/pages/EmployeeList'
+import EmployeeAddEdit from './modules/Employee/pages/EmployeeAddEdit'
 import ProductGroupList from "./modules/ProductGroup/pages/ProductGroupList";
 import ProductGroupAddEdit from './modules/ProductGroup/pages/ProductGroupAddEdit'
 import ProductList from "./modules/Product/pages/ProductList";
@@ -43,8 +43,7 @@ export default function BasePage(props) {
         <ContentRoute exact path="/withDropdown" component={WithDropdown} />
         <ContentRoute exact path="/withDatePicker" component={WithDatePicker} />
         <ContentRoute exact path="/employee/" component={EmployeeList} />
-        <ContentRoute exact path="/employee/new" component={NewEmployee} />
-        <ContentRoute exact path="/employee/edit/:id" component={NewEmployee} />
+        <ContentRoute exact path="/employee/new" component={EmployeeAddEdit}/>
         <PrivateRoute exact path="/test" roles={[ROLES.admin,ROLES.developer]} component={Test} />
         {/* End Demo part สามารถ comment ได้ */}
 

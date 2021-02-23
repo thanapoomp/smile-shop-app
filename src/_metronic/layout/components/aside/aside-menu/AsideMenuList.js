@@ -85,6 +85,21 @@ export function AsideMenuList({ layoutProps }) {
           </NavLink>
         </li>
         {/*begin::1 end EditStock*/}
+
+        {/*begin::1 Employee*/}
+        <li
+          className={`menu-item ${getMenuItemActive("/employee/", false)}`}
+          aria-haspopup="true"
+        >
+          <NavLink className="menu-link" to="/employee/">
+            <span className="svg-icon menu-icon">
+              <Icon>supervisor_account</Icon>
+            </span>
+            <span className="menu-text">Employee</span>
+          </NavLink>
+        </li>
+        {/*end::1 end Employee*/}
+
       </ul>
       {/* end::Menu Nav */}
     </Hoc>
