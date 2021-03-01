@@ -37,6 +37,27 @@ export function AsideMenuList({ layoutProps }) {
     <Hoc>
       {/* begin::Menu Nav */}
       <ul className={`menu-nav ${layoutProps.ulClasses}`}>
+        {/* begin::order */}
+        <li className="menu-section ">
+          <h4 className="menu-text">Order</h4>
+          <i className="menu-icon flaticon-more-v2"></i>
+        </li>
+        {/* end:: section */}
+        {/*begin::1 product groups*/}
+        <li
+          className={`menu-item ${getMenuItemActive("/order/new", false)}`}
+          aria-haspopup="true"
+        >
+          <NavLink className="menu-link" to="/order/new">
+            <span className="svg-icon menu-icon">
+              <Icon>add_shopping_cart</Icon>
+            </span>
+            <span className="menu-text">New Order</span>
+          </NavLink>
+        </li>
+        {/*begin::1 end product groups*/}
+
+
         {/* begin::section */}
         <li className="menu-section ">
           <h4 className="menu-text">Manage Shop</h4>
@@ -99,7 +120,6 @@ export function AsideMenuList({ layoutProps }) {
           </NavLink>
         </li>
         {/*end::1 end Employee*/}
-
       </ul>
       {/* end::Menu Nav */}
     </Hoc>
