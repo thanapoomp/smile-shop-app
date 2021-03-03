@@ -15,8 +15,8 @@ import FormikDatePicker from "../components/FormikDatePicker";
 import FormikDateTimePicker from "../components/FormikDateTimePicker";
 import FormikTimePicker from "../components/FormikTimePicker";
 import FormikAutoComplete from "../components/FormikAutoComplete";
-import FormikTextFieldNumber from '../components/FormikTextFieldNumber';
-import * as employeeAxios from '../../_EmployeeDemo/_redux/employeeAxios'
+import FormikTextFieldNumber from "../components/FormikTextFieldNumber";
+import * as employeeAxios from "../../_EmployeeDemo/_redux/employeeAxios";
 import FormikTextCardId from "../components/FormikTextCardId";
 
 function WithTextField() {
@@ -37,34 +37,49 @@ function WithTextField() {
     { id: 3, name: "Jogging" },
   ]);
 
-  const [today, setToday] = React.useState(new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate()
-      )
+  const [today, setToday] = React.useState(
+    new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate()
+    )
   );
 
-  const [relatedEmployee, setRelatedEmployee] = React.useState({id: "", firstName: '' })
+  const [relatedEmployee, setRelatedEmployee] = React.useState({
+    id: "",
+    firstName: "",
+  });
 
   React.useEffect(() => {
     // getRelatedEmployee
-    let id = 'e1b57a9c-23e3-409f-1c6a-08d8bcedf819'
-    employeeAxios.getEmployee(id)
-    .then((res)=>{
-      if (res.data.isSuccess) {
-        setRelatedEmployee({...relatedEmployee,id:res.data.data.id,firstName:res.data.data.firstName})
-      }else(
-        alert(res.data.message)
-      )
-    })
-    .catch((err) => {
-      alert(err.message)
-    })
-  }, [])
+    let id = "e1b57a9c-23e3-409f-1c6a-08d8bcedf819";
+    employeeAxios
+      .getEmployee(id)
+      .then((res) => {
+        if (res.data.isSuccess) {
+          setRelatedEmployee({
+            ...relatedEmployee,
+            id: res.data.data.id,
+            firstName: res.data.data.firstName,
+          });
+        } else alert(res.data.message);
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
+  }, []);
 
   const loadEmployee = (firstName) => {
-    return employeeAxios.getEmployeeFilter('firstName',true,1,50,'',firstName,'')
-  }
+    return employeeAxios.getEmployeeFilter(
+      "firstName",
+      true,
+      1,
+      50,
+      "",
+      firstName,
+      ""
+    );
+  };
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -75,7 +90,7 @@ function WithTextField() {
       }
 
       if (!values.firstName) {
-        errors.firstName='Required'
+        errors.firstName = "Required";
       }
 
       return errors;
@@ -95,7 +110,7 @@ function WithTextField() {
       breakfastTime: today,
       relatedToEmployee: relatedEmployee,
       accountBalance: 12345,
-      cardId: 12345
+      cardId: 12345,
     },
     onSubmit: (values) => {
       alert(JSON.stringify(values, null, 2));
@@ -130,14 +145,19 @@ function WithTextField() {
           <FormikTextField formik={formik} name="lastName" label="Last Name" />
         </Grid>
 
-                {/* Start cardId */}
-                <Grid item xs={12} lg={3}>
+        {/* Start cardId */}
+        <Grid item xs={12} lg={3}>
           <FormikTextCardId formik={formik} name="cardId" label="CardId" />
         </Grid>
 
         {/* Start account balance */}
         <Grid item xs={12} lg={3}>
-          <FormikTextFieldNumber formik={formik} name="accountBalance" label="Account Balance" currencySymbol="฿" />
+          <FormikTextFieldNumber
+            formik={formik}
+            name="accountBalance"
+            label="Account Balance"
+            currencySymbol="฿"
+          />
         </Grid>
 
         {/* Start birthDate */}

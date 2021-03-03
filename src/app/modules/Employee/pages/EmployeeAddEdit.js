@@ -7,7 +7,6 @@ import { Grid, Button, Typography } from "@material-ui/core/";
 import FormikTextField from "../../_FormikUseFormik/components/FormikTextField";
 import * as employeeAxios from '../_redux/employeeAxios'
 import { DropzoneArea } from 'material-ui-dropzone';
-import Paper from '@material-ui/core/Paper'
 function EmployeeAddEdit(props) {
 //   const URL_AFTERSUBMIT = "/employee";
 
