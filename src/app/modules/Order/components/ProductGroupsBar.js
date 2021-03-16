@@ -49,7 +49,6 @@ function ProductGroupsBar() {
 
   return (
     <AppBar position="static" color="default">
-      {(productGroupList.length > 0) && (
         <Tabs
           value={orderReducer.selectedProductGroupId}
           onChange={handleChange}
@@ -58,6 +57,13 @@ function ProductGroupsBar() {
           indicatorColor="primary"
           textColor="primary"
         >
+          {(productGroupList.length === 0) && (
+            <Tab
+              value={0}
+              key={0}
+              label=""
+            />
+          )}
           {productGroupList.map((item) => (
             <Tab
               value={item.id}
@@ -67,7 +73,6 @@ function ProductGroupsBar() {
             />
           ))}
         </Tabs>
-      )}
     </AppBar>
   );
 }

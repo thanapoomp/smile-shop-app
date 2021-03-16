@@ -22,6 +22,7 @@ import EditStockList from "./modules/Stock/pages/EditStockList";
 import EditStockAddV2 from './modules/Stock/pages/EditStockAddV2'
 import FormikContext from "./modules/_FormikDemo/pages/FormikContext";
 import NewOrder from "./modules/Order/pages/NewOrder";
+import Checkout from "./modules/Order/pages/Checkout";
 
 export default function BasePage(props) {
   // useEffect(() => {
@@ -57,6 +58,7 @@ export default function BasePage(props) {
         <ContentRoute exact path="/products/edit/:id" component={ProductAddEdit} />
 
         <ContentRoute exact path="/order/new" component={NewOrder} />
+        <ContentRoute exact path="/checkout" component={Checkout} />
 
         <ContentRoute exact path="/stock/" component={EditStockList} />
         <ContentRoute exact path="/stock/add" component={EditStockAddV2} />

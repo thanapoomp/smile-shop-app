@@ -10,16 +10,49 @@ import { useSelector, useDispatch } from "react-redux";
 import FormikTextFieldNumber from "../../_FormikUseFormik/components/FormikTextFieldNumber";
 import * as orderRedux from "../_redux/orderRedux";
 import red from "@material-ui/core/colors/red";
-import ProductItem from "./ProductItem";
-import * as productAxios from '../../Product/_redux/productAxios'
+import * as productAxios from "../../Product/_redux/productAxios";
 import { swalError } from "../../Common/components/SweetAlert";
+import { DialogContent } from "@material-ui/core";
+import ProductItem from '../components/ProductItem'
 
 function ProductDialog(props) {
   const [open, setOpen] = React.useState(false);
-  const [product, setProduct] = React.useState({})
+  const [product, setProduct] = React.useState({});
   const orderReducer = useSelector(({ order }) => order);
 
   const dispatch = useDispatch();
+
+  const loadProduct = () => {
+    if (orderReducer.selectedProductId) {
+      productAxios
+        .getProduct(orderReducer.selectedProductId)
+        .then((res) => {
+          if (res.data.isSuccess) {
+            setProduct(res.data.data);
+          } else {
+            swalError("Error", res.data.message);
+          }
+        })
+        .catch((err) => {
+          swalError("Error", err.message);
+        });
+    }
+  };
+
+  const validateNumber = () => {
+    debugger
+    let numberInCart = 0;
+    let itemInCart = [...orderReducer.cartItems].find((obj) => {
+      return obj.id === orderReducer.selectedProductId;
+    });
+
+    if (itemInCart) {
+      numberInCart = itemInCart.quantity;
+    }
+
+    let numberToCheckOut = parseInt(formik.values.quantity) + numberInCart;
+    return product.stock >= numberToCheckOut;
+  };
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -27,11 +60,16 @@ function ProductDialog(props) {
       const errors = {};
 
       if (!values.quantity) {
-          errors.quantity='Required'
+        errors.quantity = "Required";
       }
 
-      if (values.quantity > product.stock) {
-          errors.quantity='Out of stock'
+      if (values.quantity < 0) {
+        errors.quantity = "Invalid number";
+      }
+
+      //validate quantity
+      if (!validateNumber()) {
+        errors.quantity = "Out of stock";
       }
 
       return errors;
@@ -40,27 +78,34 @@ function ProductDialog(props) {
       quantity: 1,
     },
     onSubmit: (values) => {
+      let cartItemsToUpdate = [...orderReducer.cartItems];
+
+      //หาว่า product ที่จะเพิ่ม มีอยู่แล้วหรือเปล่า
+      let itemToUpdate = cartItemsToUpdate.find((obj) => {
+        return obj.id === product.id;
+      });
+      if (itemToUpdate) {
+        //มีอยู่แล้ว เพิ่ม quantity เข้าไป
+        itemToUpdate.quantity += parseInt(values.quantity);
+      } else {
+        //ยังไม่มี
+        itemToUpdate = {
+          id: product.id,
+          name: product.name,
+          quantity: parseInt(values.quantity),
+        };
+        cartItemsToUpdate.push(itemToUpdate);
+      }
+
+      itemToUpdate.price = parseInt(itemToUpdate.quantity) * product.price;
+      dispatch(orderRedux.actions.updateCart(cartItemsToUpdate));
       dispatch(orderRedux.actions.selectProduct(0));
     },
   });
 
-  const loadStock = () => {
-    if (orderReducer.selectedProductId) {
-      productAxios.getProduct(orderReducer.selectedProductId).then((res) => {
-          if (res.data.isSuccess) {
-              setProduct(res.data.data)
-          } else {
-              swalError('Error',res.data.message)
-          }
-      }).catch((err) => {
-          swalError('Error',err.message)
-      });
-    }
-  };
-
   React.useEffect(() => {
+    loadProduct();
     formik.setFieldValue("quantity", 1);
-    loadStock();
     if (orderReducer.selectedProductId) {
       setOpen(true);
     } else {
@@ -69,13 +114,13 @@ function ProductDialog(props) {
   }, [orderReducer.selectedProductId]);
 
   return (
-    <Dialog aria-labelledby="simple-dialog-title" open={open} style={{minWidth:500}}>
+    <Dialog aria-labelledby="simple-dialog-title" open={open} fullWidth>
       {orderReducer.selectedProductId && (
-        <>
-          <form onSubmit={formik.handleSubmit}>
-            <DialogTitle id="simple-dialog-title">
-              Add Product To Cart
-            </DialogTitle>
+        <form onSubmit={formik.handleSubmit}>
+          <DialogTitle id="simple-dialog-title">
+            Add Product To Cart
+          </DialogTitle>
+          <DialogContent style={{width:'100%',height:'100%'}}>
             <Grid container spacing={3}>
               <Grid item xs={6} lg={6}>
                 <ProductItem
@@ -83,15 +128,25 @@ function ProductDialog(props) {
                   allowClick={false}
                 ></ProductItem>
               </Grid>
-              <Grid item xs={6} lg={6}>
+              <Grid item xs={2} lg={2}>
+                <Button onClick={()=> {
+                  formik.setFieldValue('quantity',(parseInt(formik.values.quantity) - 1))
+                }}>-</Button>
+              </Grid>
+              <Grid item xs={2} lg={2}>
                 <FormikTextFieldNumber
                   formik={formik}
                   name="quantity"
                   label="Quantity"
                 />
               </Grid>
+              <Grid item xs={2} lg={2}>
+                <Button onClick={() => {
+                  formik.setFieldValue('quantity',(parseInt(formik.values.quantity) + 1))
+                }}>+</Button>
+              </Grid>
             </Grid>
-            <Grid container style={{ marginTop: 10 }}>
+            <Grid container style={{ marginTop: 10 }} spacing={3}>
               <Grid item xs={6} lg={6}>
                 <Button
                   fullWidth
@@ -114,8 +169,8 @@ function ProductDialog(props) {
                 </Button>
               </Grid>
             </Grid>
-          </form>
-        </>
+          </DialogContent>
+        </form>
       )}
     </Dialog>
   );

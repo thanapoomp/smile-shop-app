@@ -12,8 +12,10 @@ import CartItemFooter from "./CartItemFooter";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 function CartItemList(props) {
   const orderReducer = useSelector(({ order }) => order);
+  const history = useHistory();
   return (
     <Paper style={{ width: "100%", marginLeft: 10 }}>
       <List component="nav" aria-label="Mailbox folders">
@@ -38,7 +40,9 @@ function CartItemList(props) {
         <CartItemFooter></CartItemFooter>
         {props.showCheckout && (
           <Grid container>
-            <Button color="primary" fullWidth>
+            <Button color="primary" fullWidth onClick={() => {
+              history.push('/checkout')
+            }}>
               Check out
             </Button>
           </Grid>

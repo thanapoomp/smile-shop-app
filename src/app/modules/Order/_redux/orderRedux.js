@@ -2,7 +2,8 @@
 export const actionTypes = {
   RESET: "[RESET] Action",
   SELECT_PRODUCTGROUP: "[SELECT_PRODUCTGROUP] Action",
-  SELECT_PRODUCT: '[SELECT_PRODUCT] Action'
+  SELECT_PRODUCT: '[SELECT_PRODUCT] Action',
+  UPDATE_CART:'[UPDATE_CART] Action'
 };
 
 // state ค่าที่ถูกเก็บไว้
@@ -10,17 +11,16 @@ const initialState = {
   selectedProductGroupId: 0,
   selectedProductId: 0,
   cartItems: [
-     {id:1,name:'abc',quantity: 1,price:20},
-     {id:2,name:'def',quantity: 2,price:30},
+    //  {id:1,name:'abc',quantity: 1,price:20},
+    //  {id:2,name:'def',quantity: 2,price:30},
   ],
-  total: 50
 };
 
 // reducer แต่ละ Action จะไป update State อย่างไร
 export const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.RESET: {
-      return { initialState };
+      return { ...state, selectedProductGroupId:0,selectedProductId: 0, cartItems:[] };
     }
 
     case actionTypes.SELECT_PRODUCTGROUP: {
@@ -29,6 +29,10 @@ export const reducer = (state = initialState, action) => {
 
     case actionTypes.SELECT_PRODUCT: {
       return { ...state, selectedProductId: action.payload };
+    }
+
+    case actionTypes.UPDATE_CART: {
+      return { ...state, cartItems: action.payload };
     }
 
     default:
@@ -47,4 +51,14 @@ export const actions = {
     type: actionTypes.SELECT_PRODUCT,
     payload,
   }),
+  updateCart: (payload) => ({
+    type: actionTypes.UPDATE_CART,
+    payload,
+  }),
+  getTotal: () => {
+    let total = reducer.cartItems.reduce(function(prev, cur) {
+      return prev + cur.price;
+    }, 0);
+    return total;
+  }
 };
